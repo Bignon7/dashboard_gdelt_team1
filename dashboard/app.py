@@ -52,14 +52,18 @@ QUAD_MAP = {
 @st.cache_resource
 def get_client():
     from google.cloud import bigquery
-    try:
-        import json
-        from google.oauth2 import service_account
-        creds_dict = dict(st.secrets["gcp_service_account"])
-        creds = service_account.Credentials.from_service_account_info(creds_dict)
-        return bigquery.Client(credentials=creds, project=PROJECT)
-    except Exception:
-        return bigquery.Client(project=PROJECT)
+    from google.oauth2 import service_account
+
+    if "gcp_service_account" not in st.secrets:
+        st.error("Secret `gcp_service_account` introuvable.")
+        st.stop()
+
+    creds = service_account.Credentials.from_service_account_info(
+        dict(st.secrets["gcp_service_account"]),
+        scopes=["https://www.googleapis.com/auth/cloud-platform"],
+    )
+    return bigquery.Client(credentials=creds, project=PROJECT)
+
 
 client = get_client()
 
