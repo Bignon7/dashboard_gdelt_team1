@@ -349,7 +349,7 @@ geo = dff.dropna(subset=['lat', 'lon']).copy()
 geo = geo[geo['lat'].between(6.0, 12.5) & geo['lon'].between(0.5, 4.0)]
 
 if len(geo) > 0:
-    fig4 = px.scatter_mapbox(
+    fig4 = px.scatter_map(
         geo.head(5000),
         lat='lat', lon='lon',
         color='interaction_type',  # CORRECTION : colonne réelle
@@ -358,10 +358,11 @@ if len(geo) > 0:
         size='NumMentions',
         size_max=18,
         zoom=6.5, center={'lat': 9.3, 'lon': 2.3},
-        mapbox_style='open-street-map',
+        map_style='open-street-map',  # mapbox_style devient map_style
         opacity=0.65, height=480,
         labels={'interaction_type': "Type"}
     )
+
     fig4.update_layout(margin=dict(t=10))
     st.plotly_chart(fig4, use_container_width=True)
     st.caption(
